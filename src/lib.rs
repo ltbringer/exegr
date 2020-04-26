@@ -7,18 +7,17 @@ use regex::Regex;
 
 #[pyclass]
 struct GroupRegexMatch {
-  compiled_patterns: Vec<Regex>,
-  intents: Vec<String>
+  compiled_patterns: Vec<Regex>
 }
 
 #[pymethods]
 impl GroupRegexMatch {
   #[new]
-  fn new(patterns: Vec<&str>, intents: Vec<String>) -> PyResult<GroupRegexMatch> {
+  fn new(patterns: Vec<&str>) -> PyResult<GroupRegexMatch> {
     let compiled_patterns: Vec<Regex> = patterns.into_iter()
         .map(|pattern| Regex::new(pattern).unwrap())
         .collect();
-    Ok(GroupRegexMatch { compiled_patterns, intents })
+    Ok(GroupRegexMatch { compiled_patterns })
   }
 
   fn search(&self, texts: Vec<&str>) -> PyResult<Vec<f64>> {
