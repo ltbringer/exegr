@@ -7,30 +7,45 @@ use regex::Regex;
 
 #[pyclass]
 struct GroupRegexMatch {
-  compiled_patterns: Vec<Regex>
+  compiled_patterns: Vec<Regex>,
+  intents: Vec<String>
 }
 
 #[pymethods]
 impl GroupRegexMatch {
   #[new]
-  fn new(patterns: Vec<&str>) -> PyResult<GroupRegexMatch> {
+  fn new(patterns: Vec<&str>, intents: Vec<String>) -> PyResult<GroupRegexMatch> {
     let compiled_patterns: Vec<Regex> = patterns.into_iter()
         .map(|pattern| Regex::new(pattern).unwrap())
         .collect();
-    Ok(GroupRegexMatch { compiled_patterns })
+    Ok(GroupRegexMatch { compiled_patterns, intents })
   }
 
-  fn search(&self, texts: Vec<&str>) -> PyResult<Vec<c_double>> {
-    Ok(texts.iter()
-      .map(|text| {
-        self.compiled_patterns.iter()
-          .map(|pattern| {
+  fn search(&self, texts: Vec<&str>) -> PyResult<Vec<f64>> {
+    Ok(self.compiled_patterns.iter()
+      .map(|pattern| {
+        let scores: Vec<f64> = texts.iter()
+          .map(|text| {
             match pattern.find(text) {
               None => 0.0,
               Some(mat) => ((mat.end() - mat.start())
                 as c_double / text.len() as c_double)
             }
-          }).fold(-1./0., f64::max)
+          }).collect();
+
+        let non_zero_scores: Vec<f64> = scores.iter()
+          .cloned()
+          .filter(|score| score > &0.0)
+          .collect();
+
+        let max_score: f64 = non_zero_scores.iter()
+          .cloned()
+          .fold(-1./0., f64::max);
+
+        let score = -1.0 * (non_zero_scores.len() as f64) * max_score;
+        let e_to_score = score.exp();
+        let score_sigmoid: f64 = if non_zero_scores.len() > 0 { 1. / (1. + e_to_score) } else { 0. };
+        score_sigmoid
       }).collect())
   }
 }
