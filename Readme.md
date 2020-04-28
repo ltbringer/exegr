@@ -19,6 +19,10 @@ This might not be helpful for general purpose usage due to poor abstraction for 
 
 
 ## Installation
+```
+pip install exegr
+```
+
 ```shell
 cargo build --release
 cp target/libexegr.so /path/to/py/project
