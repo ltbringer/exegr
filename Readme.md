@@ -19,17 +19,16 @@ This might not be helpful for general purpose usage due to poor abstraction for 
 
 
 ## Installation
+You can easily add exegr to your python projects like:
 ```
 pip install exegr
 ```
 
+For testing and development use the following:
 ```shell
 cargo build --release
 cp target/libexegr.so /path/to/py/project
 ```
-
-For testing purposes, the above works. Once I can make the code usable for other regex purposes,
-this can also be shipped via pip.
 
 ## Usage
 ```python
