@@ -25,9 +25,20 @@ pip install exegr
 ```
 
 For testing and development use the following:
+
 ```shell
 cargo build --release
 cp target/libexegr.so /path/to/py/project
+```
+
+> On windows and linux, you can build normally with cargo build --release. On Mac Os, you need to set additional linker arguments. The simplest solution is to create a .cargo/config with the following content:
+
+```
+[target.x86_64-apple-darwin]
+rustflags = [
+  "-C", "link-arg=-undefined",
+  "-C", "link-arg=dynamic_lookup",
+]
 ```
 
 ## Usage
