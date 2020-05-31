@@ -82,6 +82,3 @@ fn exegr(_py: Python, m: &PyModule) -> PyResult<()> {
   m.add_class::<GroupRegexMatch>()?;
   Ok(())
 }
-
-// #[cfg(test)]
-// mod tests;
