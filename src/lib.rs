@@ -49,14 +49,14 @@ impl GroupRegexMatch {
       }).collect())
   }
 
-  fn span_matrix(&self, texts: Vec<&str>) -> PyResult<Vec<Vec<Option<(usize, usize)>>>> {
+  pub fn span_matrix(&self, texts: Vec<&str>) -> PyResult<Vec<Vec<Option<(usize, usize)>>>> {
     let mut span_matrix: Vec<Vec<Option<(usize, usize)>>> = Vec::with_capacity(self.compiled_patterns.len());
     for pattern in self.compiled_patterns.iter() {
       let mut span_vector: Vec<Option<(usize, usize)>> = Vec::with_capacity(texts.len());
       for text in texts.iter() {
         match pattern.find(text) {
           None => span_vector.push(None),
-          Some(mat) => span_vector.push(Some((mat.start(), mat.end())))
+          Some(match_) => span_vector.push(Some((match_.start(), match_.end())))
         };
       }
       span_matrix.push(span_vector);
