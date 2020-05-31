@@ -21,14 +21,14 @@ impl GroupRegexMatch {
     Ok(GroupRegexMatch { compiled_patterns })
   }
 
-  fn search(&self, texts: Vec<&str>) -> PyResult<Vec<f64>> {
+  pub fn search(&self, texts: Vec<&str>) -> PyResult<Vec<f64>> {
     Ok(self.compiled_patterns.iter()
       .map(|pattern| {
         let scores: Vec<f64> = texts.iter()
           .map(|text| {
             match pattern.find(text) {
               None => 0.0,
-              Some(mat) => ((mat.end() - mat.start())
+              Some(match_) => ((match_.end() - match_.start())
                 as c_double / text.len() as c_double)
             }
           }).collect();
