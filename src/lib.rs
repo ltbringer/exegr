@@ -63,6 +63,17 @@ impl GroupRegexMatch {
     }
     Ok(span_matrix)
   }
+
+  pub fn find_iter(&self, text: &str) -> PyResult<Vec<(usize, usize)>> {
+    let mut span_vector: Vec<(usize, usize)> = Vec::with_capacity(
+      self.compiled_patterns.len());
+    for pattern in self.compiled_patterns.iter() {
+      for match_ in pattern.find_iter(text) {
+        span_vector.push((match_.start(), match_.end()))
+      }
+    }
+    Ok(span_vector)
+  }
 }
 
 
